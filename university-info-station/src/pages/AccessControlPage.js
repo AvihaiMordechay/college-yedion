@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { MainListItems } from '../components/AccsessControl/MainListItem';
 import { AdminSignUpForm } from '../components/AccsessControl/AdminSignUpForm';
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -64,8 +65,14 @@ const defaultTheme = createTheme();
 
 const AccessControlPage = ({ setNewAdminCreated }) => {
     const [open, setOpen] = React.useState(true);
+    const [selectedPage, setSelectedPage] = React.useState('');
+
     const toggleDrawer = () => {
         setOpen(!open);
+    };
+
+    const handleMenuItemClick = (page) => {
+        setSelectedPage(page);
     };
 
     return (
@@ -99,7 +106,6 @@ const AccessControlPage = ({ setNewAdminCreated }) => {
                         >
                             ניהול הרשאות
                         </Typography>
-
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -117,7 +123,7 @@ const AccessControlPage = ({ setNewAdminCreated }) => {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        <MainListItems />
+                        <MainListItems onMenuItemClick={handleMenuItemClick} />
                     </List>
                 </Drawer>
                 <Box
@@ -134,11 +140,15 @@ const AccessControlPage = ({ setNewAdminCreated }) => {
                 >
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-
-                        <AdminSignUpForm
-                            setNewAdminCreated={setNewAdminCreated}
-                        />
-
+                        {selectedPage === 'createAdmin' && (
+                            <AdminSignUpForm setNewAdminCreated={setNewAdminCreated} />
+                        )}
+                        {selectedPage === 'managePermissions' && (
+                            <div>נהל הרשאות - תוכן נוסף כאן</div>
+                        )}
+                        {selectedPage === 'dashboard' && (
+                            <div>דף הבית - תוכן נוסף כאן</div>
+                        )}
                     </Container>
                 </Box>
             </Box>
@@ -146,4 +156,4 @@ const AccessControlPage = ({ setNewAdminCreated }) => {
     );
 }
 
-export { AccessControlPage }
+export { AccessControlPage };

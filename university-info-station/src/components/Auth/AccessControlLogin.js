@@ -1,5 +1,5 @@
 import React from "react";
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import Button from '@mui/material/Button';
@@ -46,6 +46,26 @@ const AccessConrolSignIn = () => {
         }
     };
 
+    const handleForgotPassword = async () => {
+        const email = document.getElementById('email').value;
+        if (email.length === 0) {
+            alert('אנא הכנס אימייל');
+            return;
+        } else if (email !== process.env.REACT_APP_FIREABE_U1_EMAIL) {
+            alert('אימייל לא תקין');
+            return;
+        } else if (email === process.env.REACT_APP_FIREABE_U1_EMAIL) {
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert('מייל איפוס סיסמה נשלח, אנא בדוק את תיבת הדואר שלך.');
+            } catch (err) {
+                console.log(err);
+                alert('שגיאה בשליחת מייל איפוס סיסמה.');
+            }
+        }
+    };
+
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
@@ -91,12 +111,16 @@ const AccessConrolSignIn = () => {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            התחבר
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    שכחתי סיסמה?
+                                <Link
+                                    href="#"
+                                    variant="body2"
+                                    onClick={handleForgotPassword}
+                                >
+                                    שכחתי סיסמה
                                 </Link>
                             </Grid>
 

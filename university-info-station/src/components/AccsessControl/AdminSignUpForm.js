@@ -13,8 +13,9 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import validator from 'validator';
 import zxcvbn from 'zxcvbn';
-import { auth } from '../../firebase'; // Adjust the path according to your project structure
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 
 
@@ -26,7 +27,7 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
     const [showPassword, setShowPassword] = React.useState(false);
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
-
+    const [snackbarSeverity, setSnackbarSeverity] = React.useState('success');
 
     const handleSnackbarClose = () => {
         setOpenSnackbar(false);
@@ -79,9 +80,19 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                 email: data.get('email'),
                 phone: data.get('phone')
             }
+
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, data.get('email'), password);
                 adminStructure.id = userCredential.user.uid;
+
+                setSnackbarMessage('אנא המתן...');
+                setSnackbarSeverity('info');
+                setOpenSnackbar(true);
+
+                await signInWithEmailAndPassword(auth, process.env.REACT_APP_FIREABE_U1_EMAIL, process.env.REACT_APP_FIREABE_U1_PASS);
+
+                await setDoc(doc(db, 'Admins', adminStructure.id), adminStructure);
+
                 setNewAdminCreated(true);
 
                 setPassword('');
@@ -97,7 +108,7 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                 document.getElementById('phone').value = '';
 
                 setSnackbarMessage('המשתמש נוצר בהצלחה');
-                setOpenSnackbar(true);
+                setSnackbarSeverity('success');
             } catch (error) {
                 if (error.code === 'auth/email-already-in-use') {
                     setErrors((prevErrors) => ({
@@ -106,9 +117,13 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                     }));
                 } else {
                     console.error('Error creating user:', error.message);
+                    setSnackbarMessage('שגיאה בהוספה, אנא נסה שנית מאוחר יותר');
+                    setSnackbarSeverity('error');
                 }
             }
-
+            setTimeout(() => {
+                setOpenSnackbar(false);
+            }, 3000);
         }
     };
 
@@ -243,11 +258,15 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
             </Box>
             <Snackbar
                 open={openSnackbar}
-                autoHideDuration={3000}
+                autoHideDuration={snackbarSeverity === 'info' ? null : 3000}
                 onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                >
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
