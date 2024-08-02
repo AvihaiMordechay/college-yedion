@@ -3,14 +3,19 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { SignIn } from './components/Auth/LandPageLogin';
 import { AccessConrolSignIn } from './components/Auth/AccessControlLogin';
 import { AccessControlPage } from './pages/AccessControlPage';
+import { ProtectedRoute } from './components/Auth/ProtectedRoute';
+
+
 import "./styles/App.css"
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<SignIn />} />
-        <Route path='/access-control-login' element={<AccessConrolSignIn />} />
-        <Route path='/access-control-page' element={<AccessControlPage />} />
+        <Route path='/ac-login' element={<AccessConrolSignIn />} />
+        <Route path='/' element={<ProtectedRoute allowedUid={process.env.REACT_APP_FIREABE_U1_ID} />}>
+          <Route path='/ac-dashboard' element={<AccessControlPage />} />
+        </Route>
       </Routes>
     </Router>
   );

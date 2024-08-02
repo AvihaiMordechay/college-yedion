@@ -1,5 +1,6 @@
 import React from "react";
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -28,6 +29,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 const AccessConrolSignIn = () => {
+    const navigate = useNavigate();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -35,7 +38,7 @@ const AccessConrolSignIn = () => {
             const userCredential = await signInWithEmailAndPassword(auth, data.get('email'), data.get('password'));
             const userUid = userCredential.user.uid;
             if (userUid === process.env.REACT_APP_FIREABE_U1_ID) {
-                console.log("seccsed");
+                navigate('/ac-dashboard');
             }
         }
         catch (err) {
@@ -56,7 +59,7 @@ const AccessConrolSignIn = () => {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        התחבר למנהל הרשאות
+                        מנהל הרשאות
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Box sx={{ direction: 'ltr', textAlign: 'left' }}>

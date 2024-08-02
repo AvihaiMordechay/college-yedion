@@ -71,7 +71,7 @@ const SignIn = () => {
                     >
 
                         <Typography component="h1" variant="h5">
-                            התחברות למכללה
+                            כניסה למכללה
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <Box sx={{ direction: 'ltr', textAlign: 'left' }}>
