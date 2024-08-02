@@ -9,6 +9,8 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import validator from 'validator';
 import zxcvbn from 'zxcvbn';
 import { auth } from '../../firebase'; // Adjust the path according to your project structure
@@ -16,12 +18,19 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
 
-const AdminSignUpForm = () => {
+const AdminSignUpForm = ({ setNewAdminCreated }) => {
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [errors, setErrors] = React.useState({});
     const [passwordStrength, setPasswordStrength] = React.useState(0);
     const [showPassword, setShowPassword] = React.useState(false);
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+
+    const handleSnackbarClose = () => {
+        setOpenSnackbar(false);
+    };
 
     const validate = (data) => {
         const newErrors = {};
@@ -66,14 +75,29 @@ const AdminSignUpForm = () => {
             const adminStructure = {
                 id: "",
                 firstName: data.get("firstName"),
-                lastName: data.get("lasrName"),
+                lastName: data.get("lastName"),
                 email: data.get('email'),
                 phone: data.get('phone')
             }
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, data.get('email'), password);
                 adminStructure.id = userCredential.user.uid;
+                setNewAdminCreated(true);
 
+                setPassword('');
+                setConfirmPassword('');
+                setPasswordStrength(0);
+                setErrors({});
+
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('confirmPassword').value = '';
+                document.getElementById('phone').value = '';
+
+                setSnackbarMessage('המשתמש נוצר בהצלחה');
+                setOpenSnackbar(true);
             } catch (error) {
                 if (error.code === 'auth/email-already-in-use') {
                     setErrors((prevErrors) => ({
@@ -82,7 +106,6 @@ const AdminSignUpForm = () => {
                     }));
                 } else {
                     console.error('Error creating user:', error.message);
-                    // Handle other errors if needed
                 }
             }
 
@@ -106,6 +129,9 @@ const AdminSignUpForm = () => {
 
     return (
         <Container maxWidth="sm" >
+            <Typography component="h1" variant="h5" align="center">
+                הוספת מנהל אתר
+            </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -215,6 +241,16 @@ const AdminSignUpForm = () => {
                     </Grid>
                 </Grid>
             </Box>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

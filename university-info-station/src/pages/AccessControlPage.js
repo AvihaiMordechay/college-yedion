@@ -62,7 +62,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-const AccessControlPage = () => {
+const AccessControlPage = ({ setNewAdminCreated }) => {
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -135,7 +135,9 @@ const AccessControlPage = () => {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
 
-                        <AdminSignUpForm />
+                        <AdminSignUpForm
+                            setNewAdminCreated={setNewAdminCreated}
+                        />
 
                     </Container>
                 </Box>
