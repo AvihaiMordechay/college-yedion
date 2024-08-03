@@ -25,7 +25,7 @@ const ProtectedRoute = ({ allowedUid, newAdminCreated, setNewAdminCreated }) => 
     if (!user) {
         return <Navigate to="/ac-login" />;
     }
-
+    console.log(user.uid)
     return userId === allowedUid ? <Outlet /> : <Navigate to="/ac-login" />;
 };
 

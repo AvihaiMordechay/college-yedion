@@ -13,9 +13,9 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import validator from 'validator';
 import zxcvbn from 'zxcvbn';
-import { auth, db } from '../../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { db, functions } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 
 
 
@@ -82,14 +82,13 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
             }
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, data.get('email'), password);
-                adminStructure.id = userCredential.user.uid;
-
                 setSnackbarMessage('אנא המתן...');
                 setSnackbarSeverity('info');
                 setOpenSnackbar(true);
 
-                await signInWithEmailAndPassword(auth, process.env.REACT_APP_FIREABE_U1_EMAIL, process.env.REACT_APP_FIREABE_U1_PASS);
+                const addUser = httpsCallable(functions, 'addUser');
+                const result = await addUser({ email: data.get('email'), password });
+                adminStructure.id = result.data.uid;
 
                 await setDoc(doc(db, 'Admins', adminStructure.id), adminStructure);
 
@@ -110,13 +109,14 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                 setSnackbarMessage('המשתמש נוצר בהצלחה');
                 setSnackbarSeverity('success');
             } catch (error) {
-                if (error.code === 'auth/email-already-in-use') {
+                if (error.code === 'functions/already-exists') {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         email: 'האימייל כבר קיים במערכת'
                     }));
+                    handleSnackbarClose();
                 } else {
-                    console.error('Error creating user:', error.message);
+                    console.error('Error creating user:', error.code);
                     setSnackbarMessage('שגיאה בהוספה, אנא נסה שנית מאוחר יותר');
                     setSnackbarSeverity('error');
                 }
