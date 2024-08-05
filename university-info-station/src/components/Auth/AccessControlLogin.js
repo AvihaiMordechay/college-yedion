@@ -28,7 +28,7 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-const AccessConrolSignIn = () => {
+const AccessControlSignIn = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -133,4 +133,4 @@ const AccessConrolSignIn = () => {
     );
 }
 
-export { AccessConrolSignIn };
+export { AccessControlSignIn };

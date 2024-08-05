@@ -44,6 +44,10 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
             newErrors.lastName = 'שם משפחה לא תקין';
         }
 
+        if (!data.get('personalId') || !/^\d+$/.test(data.get('personalId'))) {
+            newErrors.personalId = 'תעודת זהות לא תקינה';
+        }
+
         if (!validator.isEmail(data.get('email'))) {
             newErrors.email = 'אימייל לא תקין';
         }
@@ -74,7 +78,7 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
         } else {
             setErrors({});
             const adminStructure = {
-                id: "",
+                personalId: data.get("personalId"),
                 firstName: data.get("firstName"),
                 lastName: data.get("lastName"),
                 email: data.get('email'),
@@ -87,10 +91,17 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                 setOpenSnackbar(true);
 
                 const addUser = httpsCallable(functions, 'addUser');
-                const result = await addUser({ email: data.get('email'), password });
-                adminStructure.id = result.data.uid;
+                const user = await addUser({ email: data.get('email'), password });
 
-                await setDoc(doc(db, 'Admins', adminStructure.id), adminStructure);
+
+                await setDoc(doc(db, 'Admins', user.data.uid), adminStructure);
+
+                // Create user document in Users collection
+                await setDoc(doc(db, 'Users', user.data.uid), {
+                    role: 'admin',
+                    personalId: adminStructure.personalId
+                });
+
 
                 setNewAdminCreated(true);
 
@@ -176,6 +187,17 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            fullWidth
+                            id="personalId"
+                            label="תעודת זהות"
+                            name="personalId"
+                            autoComplete="off"
+                            error={!!errors.personalId}
+                            helperText={errors.personalId}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
                             required
                             fullWidth
                             id="email"
@@ -244,6 +266,7 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                             helperText={errors.phone}
                         />
                     </Grid>
+
                     <Grid item xs={12}>
                         <Button
                             type="submit"

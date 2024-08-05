@@ -1,6 +1,7 @@
 import React from "react";
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,6 +11,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+
 
 function Copyright(props) {
     return (
@@ -18,8 +24,6 @@ function Copyright(props) {
             <Link color="inherit" href="https://www.jce.ac.il/">
                 אתר המכללה
             </Link>{' '}
-            {'Copyright © '}
-            {new Date().getFullYear()}
 
         </Typography>
     );
@@ -28,13 +32,66 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 const SignIn = () => {
+    const [type, setType] = React.useState('');
+
+    const SelectType = () => {
+
+        const handleChange = (event) => {
+            setType(event.target.value);
+        };
+
+        return (
+            <Box >
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">התחבר בתור</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={type}
+                        label="התחבר בתור"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={"Students"}>סטודנט</MenuItem>
+                        <MenuItem value={"Staff"}>איש סגל</MenuItem>
+                        <MenuItem value={"Admins"}>תחזוקה</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+        );
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, data.get('email'), data.get('password'));
             const userUid = userCredential.user.uid;
-            console.log(userUid);
+
+            const checkIfUserExistsInCollection = async (collectionName) => {
+                const docRef = doc(db, collectionName, userUid);
+                const docSnap = await getDoc(docRef);
+                return docSnap.exists();
+            };
+
+            if (type === "Students") {
+                const isStudent = await checkIfUserExistsInCollection('Students');
+                if (isStudent) {
+                    console.log('User is a student');
+                }
+            } else if (type === "Admins") {
+                const isAdmin = await checkIfUserExistsInCollection('Admins');
+                if (isAdmin) {
+                    console.log('User is an admin');
+                }
+            } else if (type === "Staff") {
+                const isStaff = await checkIfUserExistsInCollection('Staff');
+                if (isStaff) {
+                    console.log('User is a staff member');
+                }
+            } else {
+                console.log('Please choose type to login..');
+            }
+
         }
         catch (err) {
             console.log(err);
@@ -75,12 +132,13 @@ const SignIn = () => {
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <Box sx={{ direction: 'ltr', textAlign: 'left' }}>
+                                <SelectType />
                                 <TextField
                                     margin="normal"
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
+                                    label="אימייל"
                                     name="email"
                                     autoComplete="email"
                                     autoFocus
@@ -90,7 +148,7 @@ const SignIn = () => {
                                     required
                                     fullWidth
                                     name="password"
-                                    label="Password"
+                                    label="סיסמה"
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
@@ -106,16 +164,12 @@ const SignIn = () => {
                                 התחבר
                             </Button>
                             <Grid container>
-                                <Grid item xs>
+                                <Grid item xs sx={{ direction: 'rtl' }}>
                                     <Link href="#" variant="body2">
-                                        שכחתי סיסמה?
+                                        שכחתי סיסמה
                                     </Link>
                                 </Grid>
-                                <Grid item>
-                                    <Link href="#" variant="body2">
-                                        {"Don't have an account? Sign Up"}
-                                    </Link>
-                                </Grid>
+
                             </Grid>
                             <Copyright sx={{ mt: 5 }} />
                         </Box>

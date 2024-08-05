@@ -1,29 +1,63 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { SignIn } from './components/Auth/LandPageLogin';
-import { AccessConrolSignIn } from './components/Auth/AccessControlLogin';
+import { AccessControlSignIn } from './components/Auth/AccessControlLogin';
 import { AccessControlPage } from './pages/AccessControlPage';
+// import { StudentPage } from './pages/StudentPage';
+// import { AdminPage } from './pages/AdminPage';
+// import { StaffPage } from './pages/StaffPage';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
+import "./styles/App.css";
 
-
-import "./styles/App.css"
 const App = () => {
-  const [newAdminCreated, setNewAdminCreated] = useState(false);
-
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<SignIn />} />
-        <Route path='/ac-login' element={<AccessConrolSignIn />} />
+        <Route path='/ac-login' element={<AccessControlSignIn />} />
+
         <Route path='/'
           element={
             <ProtectedRoute
-              allowedUid={process.env.REACT_APP_FIREABE_U1_ID}
-              newAdminCreated={newAdminCreated}
-              setNewAdminCreated={setNewAdminCreated}
+              allowedRoles={['ac-admin']}
             />}>
-          <Route path='/ac-dashboard' element={<AccessControlPage setNewAdminCreated={setNewAdminCreated} />} />
+          <Route path='/ac-dashboard' element={<AccessControlPage />} />
         </Route>
+
+        <Route path='/ac-dashboard'
+          element={
+            <ProtectedRoute allowedRoles={['ac-admin']}>
+              <AccessControlPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* <Route path='/students'
+          element={
+            <ProtectedRoute allowedRoles={['student']} userSpecificPage>
+              <StudentPage />
+            </ProtectedRoute>
+          }
+        /> */}
+        {/* 
+        <Route path='/admins'
+          element={
+            <ProtectedRoute allowedRoles={['admin']} userSpecificPage>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        /> */}
+        {/* 
+        <Route path='/staff'
+          element={
+            <ProtectedRoute allowedRoles={['staff']} userSpecificPage>
+              <StaffPage />
+            </ProtectedRoute>
+          }
+        /> */}
+
+        <Route path='*' element={<Navigate to="/login" />} />
+
       </Routes>
     </Router>
   );

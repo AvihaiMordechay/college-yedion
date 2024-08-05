@@ -16,7 +16,6 @@ import { MainListItems } from '../components/AccsessControl/MainListItem';
 import { AdminSignUpForm } from '../components/AccsessControl/AdminSignUpForm';
 
 const drawerWidth = 240;
-
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -63,7 +62,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-const AccessControlPage = ({ setNewAdminCreated }) => {
+const AccessControlPage = () => {
     const [open, setOpen] = React.useState(true);
     const [selectedPage, setSelectedPage] = React.useState('');
 
@@ -141,7 +140,7 @@ const AccessControlPage = ({ setNewAdminCreated }) => {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         {selectedPage === 'createAdmin' && (
-                            <AdminSignUpForm setNewAdminCreated={setNewAdminCreated} />
+                            <AdminSignUpForm />
                         )}
                         {selectedPage === 'managePermissions' && (
                             <div>נהל הרשאות - תוכן נוסף כאן</div>
