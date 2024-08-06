@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import { useNavigate } from 'react-router-dom';
 
 
 function Copyright(props) {
@@ -32,12 +33,13 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 const SignIn = () => {
-    const [type, setType] = React.useState('');
+    const navigate = useNavigate();
+    const [userType, setUserType] = React.useState('');
 
     const SelectType = () => {
 
         const handleChange = (event) => {
-            setType(event.target.value);
+            setUserType(event.target.value);
         };
 
         return (
@@ -47,7 +49,7 @@ const SignIn = () => {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={type}
+                        value={userType}
                         label="התחבר בתור"
                         onChange={handleChange}
                     >
@@ -63,38 +65,41 @@ const SignIn = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        if (data.get('email').length === 0 || data.get('password') === 0 || userType === '') {
+            console.log("אנא מלא את כל השדות");
+            return;
+        }
         try {
             const userCredential = await signInWithEmailAndPassword(auth, data.get('email'), data.get('password'));
             const userUid = userCredential.user.uid;
 
-            const checkIfUserExistsInCollection = async (collectionName) => {
+            const getUserFromCollection = async (collectionName) => {
                 const docRef = doc(db, collectionName, userUid);
                 const docSnap = await getDoc(docRef);
-                return docSnap.exists();
+                return docSnap;
             };
 
-            if (type === "Students") {
-                const isStudent = await checkIfUserExistsInCollection('Students');
-                if (isStudent) {
-                    console.log('User is a student');
-                }
-            } else if (type === "Admins") {
-                const isAdmin = await checkIfUserExistsInCollection('Admins');
-                if (isAdmin) {
-                    console.log('User is an admin');
-                }
-            } else if (type === "Staff") {
-                const isStaff = await checkIfUserExistsInCollection('Staff');
-                if (isStaff) {
-                    console.log('User is a staff member');
-                }
-            } else {
-                console.log('Please choose type to login..');
-            }
 
+            if (userType === "Students") {
+                const student = await getUserFromCollection('Students');
+                if (student.exists()) {
+                    navigate(`/students/${student.data().personalId}`);
+                }
+            } else if (userType === "Staff") {
+                const staff = await getUserFromCollection('Staff');
+                if (staff.exists()) {
+                    navigate(`/staff/${staff.data().personalId}`);
+                }
+            }
+            else if (userType === "Admins") {
+                const admin = await getUserFromCollection('Admins');
+                if (admin.exists()) {
+                    navigate(`/admins/${admin.data().personalId}`);
+                }
+            }
         }
         catch (err) {
-            console.log(err);
+            console.log("שגיאה בהתחברות", err);
         }
     };
 

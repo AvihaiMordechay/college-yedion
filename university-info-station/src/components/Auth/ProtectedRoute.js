@@ -4,18 +4,20 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '../../firebase';
 import { doc, getDoc } from "firebase/firestore";
 
-const ProtectedRoute = ({ allowedRoles, userSpecificPage = false }) => {
+const ProtectedRoute = ({ allowedRoles }) => {
     const [user] = useAuthState(auth);
-    const [userRole, setUserRole] = useState(null);
+    const [userRoles, setUserRoles] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchUserRole = async () => {
+        const fetchUserRoles = async () => {
             if (user) {
                 const userDocRef = doc(db, 'Users', user.uid);
                 const userDoc = await getDoc(userDocRef);
                 if (userDoc.exists()) {
-                    setUserRole(userDoc.data().role);
+                    console.log("one:")
+                    // Get roles from the array in the database
+                    setUserRoles(userDoc.data().role); // Default to empty array if roles are not set
                 }
                 setLoading(false);
             } else {
@@ -23,8 +25,9 @@ const ProtectedRoute = ({ allowedRoles, userSpecificPage = false }) => {
             }
         };
 
-        fetchUserRole();
+        fetchUserRoles();
     }, [user]);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -33,14 +36,10 @@ const ProtectedRoute = ({ allowedRoles, userSpecificPage = false }) => {
         return <Navigate to="/login" />;
     }
 
-    if (!allowedRoles.includes(userRole)) {
+    // Check if any of the allowed roles are included in the user's roles
+    if (!allowedRoles.some(role => userRoles.includes(role))) {
         return <Navigate to="/login" />;
     }
-
-    // // הפניה לדף משתמש ספציפי אם נדרש
-    // if (userSpecificPage) {
-    //     return <Navigate to={`/${userRole}`} />;
-    // }
 
     return <Outlet />;
 };

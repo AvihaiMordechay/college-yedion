@@ -19,7 +19,7 @@ import { httpsCallable } from 'firebase/functions';
 
 
 
-const AdminSignUpForm = ({ setNewAdminCreated }) => {
+const AdminSignUpForm = () => {
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [errors, setErrors] = React.useState({});
@@ -90,20 +90,18 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                 setSnackbarSeverity('info');
                 setOpenSnackbar(true);
 
-                const addUser = httpsCallable(functions, 'addUser');
-                const user = await addUser({ email: data.get('email'), password });
+                const addUserAuth = httpsCallable(functions, 'addUserAuth');
+                const user = await addUserAuth({ email: data.get('email'), password });
 
 
                 await setDoc(doc(db, 'Admins', user.data.uid), adminStructure);
 
                 // Create user document in Users collection
                 await setDoc(doc(db, 'Users', user.data.uid), {
-                    role: 'admin',
-                    personalId: adminStructure.personalId
+                    role: ['admin'],
+                    email: adminStructure.email
                 });
 
-
-                setNewAdminCreated(true);
 
                 setPassword('');
                 setConfirmPassword('');
@@ -112,10 +110,12 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
 
                 document.getElementById('firstName').value = '';
                 document.getElementById('lastName').value = '';
+                document.getElementById('personalId').value = '';
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('confirmPassword').value = '';
                 document.getElementById('phone').value = '';
+
 
                 setSnackbarMessage('המשתמש נוצר בהצלחה');
                 setSnackbarSeverity('success');
@@ -187,6 +187,7 @@ const AdminSignUpForm = ({ setNewAdminCreated }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            required
                             fullWidth
                             id="personalId"
                             label="תעודת זהות"

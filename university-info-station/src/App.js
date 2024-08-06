@@ -4,7 +4,7 @@ import { SignIn } from './components/Auth/LandPageLogin';
 import { AccessControlSignIn } from './components/Auth/AccessControlLogin';
 import { AccessControlPage } from './pages/AccessControlPage';
 // import { StudentPage } from './pages/StudentPage';
-// import { AdminPage } from './pages/AdminPage';
+import { AdminPage } from './pages/AdminPage';
 // import { StaffPage } from './pages/StaffPage';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import "./styles/App.css";
@@ -24,13 +24,14 @@ const App = () => {
           <Route path='/ac-dashboard' element={<AccessControlPage />} />
         </Route>
 
-        <Route path='/ac-dashboard'
+        <Route path='/'
           element={
-            <ProtectedRoute allowedRoles={['ac-admin']}>
-              <AccessControlPage />
-            </ProtectedRoute>
-          }
-        />
+            <ProtectedRoute
+              allowedRoles={['admin']}
+            />}>
+          <Route path='/admins/:personalId' element={<AdminPage />} />
+        </Route>
+
 
         {/* <Route path='/students'
           element={
@@ -39,14 +40,8 @@ const App = () => {
             </ProtectedRoute>
           }
         /> */}
-        {/* 
-        <Route path='/admins'
-          element={
-            <ProtectedRoute allowedRoles={['admin']} userSpecificPage>
-              <AdminPage />
-            </ProtectedRoute>
-          }
-        /> */}
+
+
         {/* 
         <Route path='/staff'
           element={
