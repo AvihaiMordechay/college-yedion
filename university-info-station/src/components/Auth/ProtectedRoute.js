@@ -12,14 +12,18 @@ const ProtectedRoute = ({ allowedRoles }) => {
     useEffect(() => {
         const fetchUserRoles = async () => {
             if (user) {
-                const userDocRef = doc(db, 'Users', user.uid);
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists()) {
-                    console.log("one:")
-                    // Get roles from the array in the database
-                    setUserRoles(userDoc.data().role); // Default to empty array if roles are not set
+                try {
+                    const userDocRef = doc(db, 'Users', user.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists()) {
+                        // Get roles from the array in the database
+                        setUserRoles(userDoc.data().role || []); // Default to empty array if roles are not set
+                    }
+                } catch (error) {
+                    console.error("Error fetching user roles:", error);
+                } finally {
+                    setLoading(false);
                 }
-                setLoading(false);
             } else {
                 setLoading(false);
             }

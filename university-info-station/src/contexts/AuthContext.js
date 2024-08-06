@@ -13,7 +13,6 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [userRoles, setUserRoles] = useState([]);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -33,29 +32,38 @@ export const AuthProvider = ({ children }) => {
         }
 
         if (collectionName) {
-            const docRef = doc(db, collectionName, uid);
-            const docSnap = await getDoc(docRef);
-            return docSnap.exists() ? docSnap.data() : null;
+            try {
+                const docRef = doc(db, collectionName, uid);
+                const docSnap = await getDoc(docRef);
+                return docSnap.exists() ? docSnap.data() : null;
+            } catch (error) {
+                console.error(`Error fetching user data:`, error);
+                return null;
+            }
         }
         return null;
     };
 
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
-                setCurrentUser(user);
-                // Fetch user roles from Users collection
-                const userDocRef = doc(db, 'Users', user.uid);
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists()) {
-                    const roles = userDoc.data().role || [];
-                    setUserRoles(roles);
-                    const data = await fetchUserData(user.uid, roles);
-                    setUserData(data);
+                try {
+                    setCurrentUser(user);
+                    // Fetch user roles from Users collection
+                    const userDocRef = doc(db, 'Users', user.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists()) {
+                        const roles = userDoc.data().role || [];
+                        const data = await fetchUserData(user.uid, roles);
+                        setUserData(data);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching user data:`, error);
+                    return null;
                 }
             } else {
                 setCurrentUser(null);
-                setUserRoles([]);
                 setUserData(null);
             }
             setLoading(false);

@@ -72,7 +72,6 @@ const SignIn = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, data.get('email'), data.get('password'));
             const userUid = userCredential.user.uid;
-
             const getUserFromCollection = async (collectionName) => {
                 const docRef = doc(db, collectionName, userUid);
                 const docSnap = await getDoc(docRef);
