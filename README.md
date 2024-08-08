@@ -1,6 +1,6 @@
 # Educational Institution Management System
-Author: Avihai Mordechay             
-Project Overview
+- Author: Avihai Mordechay             
+- Project Overview:     
 The Educational Institution Management System is a comprehensive platform designed to manage various aspects of a university or college. The system caters to different user roles, including students, staff members, and administrators, allowing each to access and manage relevant data and perform their respective tasks efficiently.
 
 # Features
