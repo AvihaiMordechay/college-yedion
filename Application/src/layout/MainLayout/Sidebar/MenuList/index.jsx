@@ -15,7 +15,6 @@ const MenuList = () => {
   const menu = adminMenuItems(user);
 
   const navItems = menu.items.map((item) => {
-    console.log(item);
     switch (item.type) {
       case 'group':
         return <NavGroup key={item.id} item={item} />;

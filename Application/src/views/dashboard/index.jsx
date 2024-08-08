@@ -15,7 +15,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     setLoading(false);
-    console.log(user);
   }, [user]);
 
   return (

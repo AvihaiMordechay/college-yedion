@@ -18,6 +18,14 @@ const adminDashboard = (user) => {
         url: `/admins/${user.personalId}/default`,
         icon: icons.IconDashboard,
         breadcrumbs: false
+      },
+      {
+        id: 'details',
+        title: 'פרטי המוסד',
+        type: 'item',
+        url: `/admins/${user.personalId}/default`,
+        icon: icons.IconDashboard,
+        breadcrumbs: false
       }
     ]
   };
