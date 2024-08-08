@@ -26,19 +26,20 @@ The system consists of modular React components for different pages and function
 Firebase:
 Firebase is utilized for authentication and Firestore for database management.
 # Installation
-1) Clone the repository:
+1. Clone the repository:
 git clone [https://github.com/your-repo-url/educational-institution-management-system.git](https://github.com/AvihaiMordechay/college-yedion.git)
-2) Install dependencies:
+2. Install dependencies:
 yarn install
-3) Set up Firebase:
+3. Set up Firebase:
 Create a Firebase project and add your configuration in a .env file.
-4) Navigate to: 
+4. Navigate to: 
 cd Application
-5)Run the development server:
+5. Run the development server:
 yarn start
-Usage
-Access the application through the login page.
-Use your credentials to log in as a student, staff member, or admin.
-Based on your role, you'll be redirected to your personalized dashboard.
+
+# Usage
+- Access the application through the login page.
+- Use your credentials to log in as a student, staff member, or admin.
+- Based on your role, you'll be redirected to your personalized dashboard.
 Contribution
 
