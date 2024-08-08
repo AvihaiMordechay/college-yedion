@@ -29,12 +29,12 @@ Firebase is utilized for authentication and Firestore for database management.
 # Installation
 1. Clone the repository:
 git clone [https://github.com/your-repo-url/educational-institution-management-system.git](https://github.com/AvihaiMordechay/college-yedion.git)
-2. Install dependencies:
-yarn install
-3. Set up Firebase:
-Create a Firebase project and add your configuration in a .env file.
-4. Navigate to: 
+2. Navigate to: 
 cd Application
+3. Install dependencies:
+yarn install
+4. Set up Firebase:
+Create a Firebase project and add your configuration in a .env file.
 5. Run the development server:
 yarn start
 
