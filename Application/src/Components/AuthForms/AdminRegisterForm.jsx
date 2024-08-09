@@ -14,7 +14,14 @@ import Alert from "@mui/material/Alert";
 import validator from "validator";
 import zxcvbn from "zxcvbn";
 import { db, functions } from "firebase";
-import { doc, setDoc, collection } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -41,7 +48,28 @@ const AdminRegisterForm = () => {
     setOpenSnackbar(false);
   };
 
-  const validate = (data) => {
+  const validatePersonalId = async (personalId) => {
+    const checkPersonalIdExists = httpsCallable(
+      functions,
+      "checkPersonalIdExists"
+    );
+
+    try {
+      const result = await checkPersonalIdExists({ personalId });
+      if (result.data.exists) {
+        console.log("Personal ID already exists in one of the collections.");
+        return false;
+      } else {
+        console.log("Personal ID is available.");
+        return true;
+      }
+    } catch (error) {
+      console.error("Error checking personal ID:", error);
+      return false;
+    }
+  };
+
+  const validate = async (data) => {
     const newErrors = {};
 
     if (!data.get("firstName") || /\d/.test(data.get("firstName"))) {
@@ -54,6 +82,13 @@ const AdminRegisterForm = () => {
 
     if (!data.get("personalId") || !/^\d+$/.test(data.get("personalId"))) {
       newErrors.personalId = "תעודת זהות לא תקינה";
+    } else {
+      const isPersonalIdValid = await validatePersonalId(
+        data.get("personalId")
+      );
+      if (!isPersonalIdValid) {
+        newErrors.personalId = "תעודת זהות כבר קיימת במערכת";
+      }
     }
 
     if (!gender) {
@@ -82,12 +117,19 @@ const AdminRegisterForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const newErrors = validate(data);
+
+    setSnackbarMessage("אנא המתן...");
+    setSnackbarSeverity("info");
+    setOpenSnackbar(true);
+
+    const newErrors = await validate(data);
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setOpenSnackbar(false);
       return;
     } else {
+      // אם אין שגיאות, המשך עם תהליך ההוספה של המשתמש
       setErrors({});
       const adminStructure = {
         personalId: data.get("personalId"),
@@ -96,14 +138,10 @@ const AdminRegisterForm = () => {
         gender,
         email: data.get("email"),
         phone: data.get("phone"),
-        roles: ["admin-lvl-1"], //TODO: HANDLE IT AND DEFIND WHAT THE LEVEL TO START WITH.
+        roles: ["admin-lvl-1"], // TODO: HANDLE IT AND DEFINE WHAT THE LEVEL TO START WITH.
       };
 
       try {
-        setSnackbarMessage("אנא המתן...");
-        setSnackbarSeverity("info");
-        setOpenSnackbar(true);
-
         const addUserAuth = httpsCallable(functions, "addUserAuth");
         const user = await addUserAuth({ email: data.get("email"), password });
 
@@ -114,7 +152,6 @@ const AdminRegisterForm = () => {
         // Create an empty 'Messages' collection for the user
         const messagesCollectionRef = collection(userDocRef, "Messages");
 
-        console.log(messagesCollectionRef);
         const newMessageDocRef = doc(messagesCollectionRef, "welcomeMessage");
         await setDoc(newMessageDocRef, { content: "Welcome message" });
 

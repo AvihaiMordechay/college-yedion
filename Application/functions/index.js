@@ -1,19 +1,25 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const cors = require("cors")({ origin: true });
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+admin.initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+exports.checkPersonalIdExists = functions.https.onCall(async (data, context) => {
+    const adminUid = functions.config().auth.u1_id;
+    // Only allow the super admin to execute this function
+    if (!context.auth || context.auth.uid !== adminUid) {
+        throw new functions.https.HttpsError('permission-denied', 'Unauthorized');
+    }
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    const { personalId } = data;
+    const collections = ["Students", "Admins", "Staff"];
+
+    for (const collectionName of collections) {
+        const snapshot = await admin.firestore().collection(collectionName).where("personalId", "==", personalId).get();
+        if (!snapshot.empty) {
+            return { exists: true };
+        }
+    }
+
+    return { exists: false };
+});

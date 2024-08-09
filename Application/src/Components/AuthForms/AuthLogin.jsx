@@ -16,8 +16,10 @@ import MenuItem from "@mui/material/MenuItem";
 import { auth, db } from "firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs } from "firebase/firestore";
 import { useUser } from "context/UserContext";
+import { collection } from "firebase/firestore";
+
 // third-party
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -32,12 +34,15 @@ const AuthLogin = ({ ...others }) => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const handleSignIn = async (values) => {
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -66,6 +71,21 @@ const AuthLogin = ({ ...others }) => {
         const admin = await getUserFromCollection("Admins");
         if (admin.exists()) {
           userData = admin.data();
+          console.log(1);
+          // פה אנחנו מוסיפים את ההודעות למשתמש
+          const messagesCollectionRef = collection(
+            db,
+            "Admins",
+            userUid,
+            "Messages"
+          );
+          console.log(2);
+          const messagesSnapshot = await getDocs(messagesCollectionRef);
+          const messages = messagesSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          userData.messages = messages; // מוסיפים את ההודעות ל-userData
         }
       }
       if (userData) {
@@ -76,6 +96,7 @@ const AuthLogin = ({ ...others }) => {
       console.error(err);
     }
   };
+
   return (
     <>
       <Formik
