@@ -1,24 +1,24 @@
-import PropTypes from 'prop-types';
-import { useState, forwardRef } from 'react';
+import PropTypes from "prop-types";
+import { useState, forwardRef } from "react";
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Popper from '@mui/material/Popper';
+import { useTheme } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Popper from "@mui/material/Popper";
 
 // third-party
-import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
+import PopupState, { bindPopper, bindToggle } from "material-ui-popup-state";
 
 // project imports
-import Transitions from 'ui-component/extended/Transitions';
+import Transitions from "components/extended/Transitions";
 
 // assets
-import { IconSearch } from '@tabler/icons-react';
+import { IconSearch } from "@tabler/icons-react";
 
 const HeaderAvatar = forwardRef(({ children, ...others }, ref) => {
   const theme = useTheme();
@@ -30,12 +30,12 @@ const HeaderAvatar = forwardRef(({ children, ...others }, ref) => {
       sx={{
         ...theme.typography.commonAvatar,
         ...theme.typography.mediumAvatar,
-        bgcolor: 'secondary.light',
-        color: 'secondary.dark',
-        '&:hover': {
-          bgcolor: 'secondary.dark',
-          color: 'secondary.light'
-        }
+        bgcolor: "secondary.light",
+        color: "secondary.dark",
+        "&:hover": {
+          bgcolor: "secondary.dark",
+          color: "secondary.light",
+        },
       }}
       {...others}
     >
@@ -45,7 +45,7 @@ const HeaderAvatar = forwardRef(({ children, ...others }, ref) => {
 });
 
 HeaderAvatar.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 // ==============================|| SEARCH INPUT - MOBILE||============================== //
@@ -65,8 +65,11 @@ const MobileSearch = ({ value, setValue, popupState }) => {
         </InputAdornment>
       }
       aria-describedby="search-helper-text"
-      inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
-      sx={{ width: '100%', ml: 0.5, px: 2, bgcolor: 'background.paper' }}
+      inputProps={{
+        "aria-label": "weight",
+        sx: { bgcolor: "transparent", pl: 0.5 },
+      }}
+      sx={{ width: "100%", ml: 0.5, px: 2, bgcolor: "background.paper" }}
     />
   );
 };
@@ -74,17 +77,17 @@ const MobileSearch = ({ value, setValue, popupState }) => {
 MobileSearch.propTypes = {
   value: PropTypes.string,
   setValue: PropTypes.func,
-  popupState: PopupState
+  popupState: PopupState,
 };
 
 // ==============================|| SEARCH INPUT ||============================== //
 
 const SearchSection = () => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
 
   return (
     <>
-      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
         <PopupState variant="popper" popupId="demo-popup-popper">
           {(popupState) => (
             <>
@@ -96,16 +99,39 @@ const SearchSection = () => {
               <Popper
                 {...bindPopper(popupState)}
                 transition
-                sx={{ zIndex: 1100, width: '99%', top: '-55px !important', px: { xs: 1.25, sm: 1.5 } }}
+                sx={{
+                  zIndex: 1100,
+                  width: "99%",
+                  top: "-55px !important",
+                  px: { xs: 1.25, sm: 1.5 },
+                }}
               >
                 {({ TransitionProps }) => (
                   <>
-                    <Transitions type="zoom" {...TransitionProps} sx={{ transformOrigin: 'center left' }}>
-                      <Card sx={{ bgcolor: 'background.default', border: 0, boxShadow: 'none' }}>
+                    <Transitions
+                      type="zoom"
+                      {...TransitionProps}
+                      sx={{ transformOrigin: "center left" }}
+                    >
+                      <Card
+                        sx={{
+                          bgcolor: "background.default",
+                          border: 0,
+                          boxShadow: "none",
+                        }}
+                      >
                         <Box sx={{ p: 2 }}>
-                          <Grid container alignItems="center" justifyContent="space-between">
+                          <Grid
+                            container
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
                             <Grid item xs>
-                              <MobileSearch value={value} setValue={setValue} popupState={popupState} />
+                              <MobileSearch
+                                value={value}
+                                setValue={setValue}
+                                popupState={popupState}
+                              />
                             </Grid>
                           </Grid>
                         </Box>
@@ -118,7 +144,7 @@ const SearchSection = () => {
           )}
         </PopupState>
       </Box>
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
         <OutlinedInput
           id="input-search-header"
           value={value}
@@ -130,7 +156,10 @@ const SearchSection = () => {
             </InputAdornment>
           }
           aria-describedby="search-helper-text"
-          inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
+          inputProps={{
+            "aria-label": "weight",
+            sx: { bgcolor: "transparent", pl: 0.5 },
+          }}
           sx={{ width: { md: 250, lg: 434 }, ml: 2, px: 2 }}
         />
       </Box>
