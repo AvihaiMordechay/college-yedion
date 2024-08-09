@@ -1,16 +1,12 @@
 import { lazy } from "react";
 
 // project imports
-import Loadable from "components/Loadable";
+import Loadable from "Components/Loadable";
 import MinimalLayout from "layout/MinimalLayout";
-import { AccessControlLogin } from "views/pages/authentication3/AccessControlLogin";
+import { AccessControlLogin } from "Authentication/AccessControlLogin";
 // login option 3 routing
-const AuthLogin3 = Loadable(
-  lazy(() => import("views/pages/authentication3/Login3"))
-);
-const AuthRegister3 = Loadable(
-  lazy(() => import("views/pages/authentication3/Register3"))
-);
+const AuthLogin = Loadable(lazy(() => import("Authentication/Login")));
+const AuthRegister = Loadable(lazy(() => import("Authentication/Register")));
 
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
@@ -20,7 +16,7 @@ const AuthenticationRoutes = {
   children: [
     {
       path: "/login",
-      element: <AuthLogin3 />,
+      element: <AuthLogin />,
     },
     {
       path: "/ac-login",
@@ -28,7 +24,7 @@ const AuthenticationRoutes = {
     },
     {
       path: "/register",
-      element: <AuthRegister3 />,
+      element: <AuthRegister />,
     },
   ],
 };

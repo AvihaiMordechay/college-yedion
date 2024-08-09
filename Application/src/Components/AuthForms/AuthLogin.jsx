@@ -22,7 +22,7 @@ import { useUser } from "context/UserContext";
 import * as Yup from "yup";
 import { Formik } from "formik";
 // project imports
-import AnimateButton from "components/extended/AnimateButton";
+import AnimateButton from "Components/extended/AnimateButton";
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";

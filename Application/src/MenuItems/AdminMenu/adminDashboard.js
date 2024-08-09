@@ -20,10 +20,10 @@ const adminDashboard = (user) => {
         breadcrumbs: false
       },
       {
-        id: 'support-system',
+        id: 'messaging-system',
         title: 'מערכת פניות',
         type: 'item',
-        url: `/admins/${user.personalId}/support-system`,
+        url: `/admins/${user.personalId}/messaging-system`,
         icon: icons.IconSend,
         breadcrumbs: false
       },

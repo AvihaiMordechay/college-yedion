@@ -18,7 +18,7 @@ import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 
 // project-import
-import Chip from "components/extended/Chip";
+import Chip from "Components/extended/Chip";
 
 // assets
 import {

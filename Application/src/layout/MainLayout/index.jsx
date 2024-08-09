@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import Breadcrumbs from "components/extended/Breadcrumbs";
+import Breadcrumbs from "Components/extended/Breadcrumbs";
 import { SET_MENU } from "store/actions";
 import { drawerWidth } from "store/constant";
 

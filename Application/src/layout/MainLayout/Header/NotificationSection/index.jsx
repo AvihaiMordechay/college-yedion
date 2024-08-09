@@ -23,8 +23,8 @@ import ButtonBase from "@mui/material/ButtonBase";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 // project imports
-import MainCard from "components/cards/MainCard";
-import Transitions from "components/extended/Transitions";
+import MainCard from "Components/cards/MainCard";
+import Transitions from "Components/extended/Transitions";
 import NotificationList from "./NotificationList";
 
 // assets

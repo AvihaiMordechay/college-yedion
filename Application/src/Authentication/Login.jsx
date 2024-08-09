@@ -1,18 +1,17 @@
 import { Link } from "react-router-dom";
 
 // material-ui
-import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 // project imports
-import AuthWrapper1 from "../AuthWrapper1";
-import AuthCardWrapper from "../AuthCardWrapper";
-import AuthLogin from "../authentication/auth-forms/AuthLogin";
-import Logo from "components/Logo";
-import AuthFooter from "components/cards/AuthFooter";
+import AuthWrapper from "./AuthWrapper";
+import AuthCardWrapper from "./AuthCardWrapper";
+import AuthLogin from "Components/AuthForms/AuthLogin.jsx";
+import Logo from "Components/Logo";
+import AuthFooter from "Components/cards/AuthFooter";
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
@@ -20,7 +19,7 @@ const Login = () => {
   const downMD = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   return (
-    <AuthWrapper1>
+    <AuthWrapper>
       <Grid
         container
         direction="column"
@@ -90,7 +89,7 @@ const Login = () => {
           <AuthFooter />
         </Grid>
       </Grid>
-    </AuthWrapper1>
+    </AuthWrapper>
   );
 };
 

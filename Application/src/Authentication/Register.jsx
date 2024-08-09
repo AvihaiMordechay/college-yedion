@@ -8,11 +8,11 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 // project imports
-import AuthWrapper1 from "../AuthWrapper1";
-import AuthCardWrapper from "../AuthCardWrapper";
-import Logo from "components/Logo";
-import AuthRegister from "../authentication/auth-forms/AuthRegister";
-import AuthFooter from "components/cards/AuthFooter";
+import AuthWrapper from "./AuthWrapper";
+import AuthCardWrapper from "./AuthCardWrapper";
+import Logo from "Components/Logo";
+import AuthRegister from "/Components/AuthForms/AuthRegister.jsx";
+import AuthFooter from "Components/cards/AuthFooter";
 
 // assets
 
@@ -22,7 +22,7 @@ const Register = () => {
   const downMD = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   return (
-    <AuthWrapper1>
+    <AuthWrapper>
       <Grid
         container
         direction="column"
@@ -113,7 +113,7 @@ const Register = () => {
           <AuthFooter />
         </Grid>
       </Grid>
-    </AuthWrapper1>
+    </AuthWrapper>
   );
 };
 

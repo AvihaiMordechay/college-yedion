@@ -4,7 +4,8 @@ import ProtectedRoute from "routes/ProtectedRoute"; // הוספת ProtectedRoute
 
 // project imports
 import MainLayout from "layout/MainLayout";
-import Loadable from "components/Loadable";
+import Loadable from "Components/Loadable";
+import MessagingSystem from "Components/MessagingSystem";
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("views/dashboard")));
 
@@ -36,10 +37,10 @@ const MainRoutes = {
       ),
     },
     {
-      path: "/admins/:personalId/support-system",
+      path: "/admins/:personalId/messaging-system",
       element: (
         <ProtectedRoute>
-          <DashboardDefault />
+          <MessagingSystem />
         </ProtectedRoute>
       ),
     },

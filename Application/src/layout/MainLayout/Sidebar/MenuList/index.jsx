@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 
 // project imports
 import NavGroup from "./NavGroup";
-import adminMenuItems from "menu-items/admin-menu";
+import adminMenuItems from "MenuItems/AdminMenu";
 import { useUser } from "context/UserContext";
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //

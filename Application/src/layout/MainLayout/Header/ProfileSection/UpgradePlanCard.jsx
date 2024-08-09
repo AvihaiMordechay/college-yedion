@@ -8,7 +8,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 // project imports
-import AnimateButton from "components/extended/AnimateButton";
+import AnimateButton from "Components/extended/AnimateButton";
 
 // ==============================|| PROFILE MENU - UPGRADE PLAN CARD ||============================== //
 

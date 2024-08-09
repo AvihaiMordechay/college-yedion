@@ -29,8 +29,8 @@ import Typography from "@mui/material/Typography";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 // project imports
-import MainCard from "components/cards/MainCard";
-import Transitions from "components/extended/Transitions";
+import MainCard from "Components/cards/MainCard";
+import Transitions from "Components/extended/Transitions";
 import UpgradePlanCard from "./UpgradePlanCard";
 import User1 from "assets/images/users/user-round.svg";
 
