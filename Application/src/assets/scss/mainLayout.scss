@@ -1,12 +1,7 @@
-.custom-nav-item {
+.labal-slidebar {
   display: flex;
   align-items: center;
-
-  .MuiListItemText-root {
-    flex-grow: 1;
-  }
-
-  .icon-nav-item {
-    margin-left: 16px; // המרחק בין האייקון לתווית
-  }
+}
+.icon-slidebar {
+    margin-left: -25px;
 }

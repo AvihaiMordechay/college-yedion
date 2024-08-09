@@ -25,6 +25,12 @@ const NavCollapse = ({ menu, level }) => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
+  const idsToExcludeFromAutoOpen = [
+    "sections",
+    "faculties",
+    "departments",
+    "staff",
+  ];
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -32,7 +38,7 @@ const NavCollapse = ({ menu, level }) => {
   const handleClick = () => {
     setOpen(!open);
     setSelected(!selected ? menu.id : null);
-    if (menu?.id !== "authentication") {
+    if (!idsToExcludeFromAutoOpen.includes(menu?.id)) {
       navigate(menu.children[0]?.url);
     }
   };
@@ -114,6 +120,7 @@ const NavCollapse = ({ menu, level }) => {
         onClick={handleClick}
       >
         <ListItemText
+          className="labal-slidebar"
           primary={
             <Typography
               variant={selected === menu.id ? "h5" : "body1"}
@@ -154,23 +161,7 @@ const NavCollapse = ({ menu, level }) => {
         )}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List
-          component="div"
-          disablePadding
-          sx={{
-            position: "relative",
-            "&:after": {
-              content: "''",
-              position: "absolute",
-              left: "32px",
-              top: 0,
-              height: "100%",
-              width: "1px",
-              opacity: 1,
-              background: theme.palette.primary.light,
-            },
-          }}
-        >
+        <List component="div" disablePadding>
           {menus}
         </List>
       </Collapse>

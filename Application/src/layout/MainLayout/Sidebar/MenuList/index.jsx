@@ -1,12 +1,10 @@
 // material-ui
-import { Typography } from '@mui/material';
+import { Typography } from "@mui/material";
 
 // project imports
-import NavGroup from './NavGroup';
-import menuItem from 'menu-items';
-import adminMenuItems from 'menu-items/admin-menu';
-import { useUser } from 'context/UserContext';
-
+import NavGroup from "./NavGroup";
+import adminMenuItems from "menu-items/admin-menu";
+import { useUser } from "context/UserContext";
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
@@ -16,7 +14,7 @@ const MenuList = () => {
 
   const navItems = menu.items.map((item) => {
     switch (item.type) {
-      case 'group':
+      case "group":
         return <NavGroup key={item.id} item={item} />;
       default:
         return (

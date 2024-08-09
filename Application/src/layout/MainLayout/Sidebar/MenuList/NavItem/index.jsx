@@ -91,7 +91,7 @@ const NavItem = ({ item, level }) => {
       onClick={() => itemHandler(item.id)}
     >
       <ListItemText
-        className=""
+        className="labal-slidebar"
         primary={
           <Typography
             variant={
@@ -118,7 +118,7 @@ const NavItem = ({ item, level }) => {
         }
       />
       <ListItemIcon
-        className="icon-nav-item"
+        className="icon-slidebar"
         sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}
       >
         {itemIcon}

@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 // third-party
@@ -14,7 +13,6 @@ import { BrowserView, MobileView } from "react-device-detect";
 // project imports
 import MenuList from "./MenuList";
 import LogoSection from "../LogoSection";
-import Chip from "ui-component/extended/Chip";
 
 import { drawerWidth } from "store/constant";
 
