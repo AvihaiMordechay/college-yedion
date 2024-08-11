@@ -44,6 +44,7 @@ const AuthLogin = ({ ...others }) => {
   };
 
   const handleSignIn = async (values) => {
+    let userData = null;
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -51,46 +52,66 @@ const AuthLogin = ({ ...others }) => {
         values.password
       );
       const userUid = userCredential.user.uid;
+
       const getUserFromCollection = async (collectionName) => {
         const docRef = doc(db, collectionName, userUid);
         const docSnap = await getDoc(docRef);
         return docSnap;
       };
-      let userData = null;
-      if (values.role === "Students") {
-        const student = await getUserFromCollection("Students");
-        if (student.exists()) {
-          userData = student.data();
-        }
-      } else if (values.role === "Staff") {
-        const staff = await getUserFromCollection("Staff");
-        if (staff.exists()) {
-          userData = staff.data();
-        }
-      } else if (values.role === "Admins") {
+
+      if (values.role === "Admins") {
         const admin = await getUserFromCollection("Admins");
         if (admin.exists()) {
           userData = admin.data();
-          console.log(1);
-          // פה אנחנו מוסיפים את ההודעות למשתמש
+          userData.uid = userUid;
+
+          // Get the Messages collection
           const messagesCollectionRef = collection(
             db,
             "Admins",
             userUid,
             "Messages"
           );
-          console.log(2);
-          const messagesSnapshot = await getDocs(messagesCollectionRef);
-          const messages = messagesSnapshot.docs.map((doc) => ({
+
+          const incomingMessagesCollectionRef = collection(
+            messagesCollectionRef,
+            "incoming",
+            "incomingMessages"
+          );
+          const incomingMessagesSnapshot = await getDocs(
+            incomingMessagesCollectionRef
+          );
+          const incomingMessages = incomingMessagesSnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
-          userData.messages = messages; // מוסיפים את ההודעות ל-userData
+
+          const outcomingMessagesCollectionRef = collection(
+            messagesCollectionRef,
+            "outcoming",
+            "outcomingMessages"
+          );
+          const outcomingMessagesSnapshot = await getDocs(
+            outcomingMessagesCollectionRef
+          );
+          const outcomingMessages = outcomingMessagesSnapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(incomingMessages),
+            })
+          );
+          console.log(incomingMessages);
+          // Add the fetched messages to the userData
+          userData.messages = {
+            incomingMessages,
+            outcomingMessages,
+          };
         }
       }
+
       if (userData) {
         setUser(userData);
-        navigate(`/${values.role.toLowerCase()}/${userData.personalId}`);
+        navigate(`/${values.role.toLowerCase()}/${userUid}`);
       }
     } catch (err) {
       console.error(err);

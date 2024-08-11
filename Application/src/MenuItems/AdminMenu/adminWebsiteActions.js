@@ -19,7 +19,7 @@ const adminWebsiteActions = (user) => {
                 id: 'management-more-information',
                 title: 'ניהול מידע נוסף',
                 type: 'item',
-                url: `/admins/${user.personalId}/website-actions/management-more-information`,
+                url: `/admins/${user.uid}/website-actions/management-more-information`,
                 icon: icons.IconFileInfo,
                 breadcrumbs: false
             },
@@ -27,7 +27,7 @@ const adminWebsiteActions = (user) => {
                 id: 'management-guides',
                 title: 'ניהול מדריכים',
                 type: 'item',
-                url: `/admins/${user.personalId}/website-actions/management-guides`,
+                url: `/admins/${user.uid}/website-actions/management-guides`,
                 icon: icons.IconFileDots,
                 breadcrumbs: false
             }

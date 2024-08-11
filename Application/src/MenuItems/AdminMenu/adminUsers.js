@@ -25,14 +25,14 @@ const adminUsers = (user) => {
                         id: 'management-staff',
                         title: 'ניהול אנשי צוות',
                         type: 'item',
-                        url: `/admins/${user.personalId}/users/staff/management-staff`,
+                        url: `/admins/${user.uid}/users/staff/management-staff`,
                         breadcrumbs: false
                     },
                     {
                         id: 'adding-staff',
                         title: 'הוספת איש צוות',
                         type: 'item',
-                        url: `/admins/${user.personalId}/users/staff/adding-staff`,
+                        url: `/admins/${user.uid}/users/staff/adding-staff`,
                         breadcrumbs: false
                     }
                 ]

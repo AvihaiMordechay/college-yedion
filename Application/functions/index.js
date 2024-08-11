@@ -23,3 +23,31 @@ exports.checkPersonalIdExists = functions.https.onCall(async (data, context) => 
 
     return { exists: false };
 });
+
+exports.addAdminUserAuth = functions.https.onCall(async (data, context) => {
+    const adminUid = functions.config().auth.u1_id;
+
+    // בדיקה שהמשתמש המתחבר הוא האדמין הראשי
+    if (!context.auth || context.auth.uid !== adminUid) {
+        throw new functions.https.HttpsError('permission-denied', 'לא מורשה');
+    }
+
+    try {
+        // יצירת משתמש עם UID מותאם אישית
+        const userRecord = await admin.auth().createUser({
+            uid: data.personalId, // שימוש במספר הזהות כ-UID
+            email: data.email,
+            password: data.password,
+        });
+        return { uid: userRecord.uid };
+    } catch (error) {
+        console.error('Error creating user:', error);
+        if (error.code === "auth/email-already-exists") {
+            throw new functions.https.HttpsError('already-exists', 'email-already-exists', error);
+        } else if (error.code === "auth/uid-already-exists") {
+            throw new functions.https.HttpsError('already-exists', 'uid-already-exists', error);
+        } else {
+            throw new functions.https.HttpsError('unknown', 'שגיאה בהוספה', error);
+        }
+    }
+});

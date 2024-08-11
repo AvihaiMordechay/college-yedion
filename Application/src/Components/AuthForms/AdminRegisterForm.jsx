@@ -48,28 +48,7 @@ const AdminRegisterForm = () => {
     setOpenSnackbar(false);
   };
 
-  const validatePersonalId = async (personalId) => {
-    const checkPersonalIdExists = httpsCallable(
-      functions,
-      "checkPersonalIdExists"
-    );
-
-    try {
-      const result = await checkPersonalIdExists({ personalId });
-      if (result.data.exists) {
-        console.log("Personal ID already exists in one of the collections.");
-        return false;
-      } else {
-        console.log("Personal ID is available.");
-        return true;
-      }
-    } catch (error) {
-      console.error("Error checking personal ID:", error);
-      return false;
-    }
-  };
-
-  const validate = async (data) => {
+  const validate = (data) => {
     const newErrors = {};
 
     if (!data.get("firstName") || /\d/.test(data.get("firstName"))) {
@@ -82,13 +61,6 @@ const AdminRegisterForm = () => {
 
     if (!data.get("personalId") || !/^\d+$/.test(data.get("personalId"))) {
       newErrors.personalId = "תעודת זהות לא תקינה";
-    } else {
-      const isPersonalIdValid = await validatePersonalId(
-        data.get("personalId")
-      );
-      if (!isPersonalIdValid) {
-        newErrors.personalId = "תעודת זהות כבר קיימת במערכת";
-      }
     }
 
     if (!gender) {
@@ -122,7 +94,7 @@ const AdminRegisterForm = () => {
     setSnackbarSeverity("info");
     setOpenSnackbar(true);
 
-    const newErrors = await validate(data);
+    const newErrors = validate(data);
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -132,7 +104,6 @@ const AdminRegisterForm = () => {
       // אם אין שגיאות, המשך עם תהליך ההוספה של המשתמש
       setErrors({});
       const adminStructure = {
-        personalId: data.get("personalId"),
         firstName: data.get("firstName"),
         lastName: data.get("lastName"),
         gender,
@@ -142,18 +113,48 @@ const AdminRegisterForm = () => {
       };
 
       try {
-        const addUserAuth = httpsCallable(functions, "addUserAuth");
-        const user = await addUserAuth({ email: data.get("email"), password });
-
-        // Create a document for the user in the 'Admins' collection
-        const userDocRef = doc(db, "Admins", user.data.uid);
+        const addAdminUserAuth = httpsCallable(functions, "addAdminUserAuth");
+        const user = await addAdminUserAuth({
+          personalId: data.get("personalId"), // שולח את ה-ID האישי
+          email: data.get("email"),
+          password: data.get("password"),
+        });
+        // Create a document for the user in the 'Admins' collection using personalId as the document ID
+        const userDocRef = doc(db, "Admins", data.get("personalId"));
         await setDoc(userDocRef, adminStructure);
 
         // Create an empty 'Messages' collection for the user
         const messagesCollectionRef = collection(userDocRef, "Messages");
 
-        const newMessageDocRef = doc(messagesCollectionRef, "welcomeMessage");
-        await setDoc(newMessageDocRef, { content: "Welcome message" });
+        const incomingMessagesRef = doc(messagesCollectionRef, "incoming");
+
+        const incomingMessagesCollectionRef = collection(
+          incomingMessagesRef,
+          "incomingMessages"
+        );
+
+        const incomingWelcomeMesseageRef = doc(
+          incomingMessagesCollectionRef,
+          "welcomeMessage"
+        );
+        await setDoc(incomingWelcomeMesseageRef, {
+          content: "Welcome incoming message",
+        });
+
+        const outcomingMessagesRef = doc(messagesCollectionRef, "outcoming");
+
+        const outcomingMessagesCollectionRef = collection(
+          outcomingMessagesRef,
+          "outcomingMessages"
+        );
+
+        const outcomingWelcomeMessageDocRef = doc(
+          outcomingMessagesCollectionRef,
+          "welcomeMessage"
+        );
+        await setDoc(outcomingWelcomeMessageDocRef, {
+          content: "Welcome outcoming message",
+        });
 
         setPassword("");
         setConfirmPassword("");
@@ -172,17 +173,28 @@ const AdminRegisterForm = () => {
         setSnackbarMessage("המשתמש נוצר בהצלחה");
         setSnackbarSeverity("success");
       } catch (error) {
+        console.log(error.code);
         if (error.code === "functions/already-exists") {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            email: "האימייל כבר קיים במערכת",
-          }));
-          handleSnackbarClose();
+          if (error.message.includes("email-already-exists")) {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              email: "האימייל כבר קיים במערכת",
+            }));
+          } else if (error.message.includes("uid-already-exists")) {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              personalId: "תעודת זהות כבר קיימת במערכת",
+            }));
+          }
+        } else if (error.code === "permission-denied") {
+          setSnackbarMessage("אין לך הרשאה להוסיף משתמש זה");
+          setSnackbarSeverity("error");
         } else {
-          console.error("Error creating user:", error.code);
+          console.error("Error creating user:", error.message);
           setSnackbarMessage("שגיאה בהוספה, אנא נסה שנית מאוחר יותר");
           setSnackbarSeverity("error");
         }
+        handleSnackbarClose();
       }
       setTimeout(() => {
         setOpenSnackbar(false);

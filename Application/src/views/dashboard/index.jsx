@@ -17,7 +17,13 @@ const Dashboard = () => {
     setLoading(false);
   }, [user]);
 
-  return <Grid container spacing={gridSpacing}></Grid>;
+  return (
+    <Grid container spacing={gridSpacing}>
+      <Grid item xs={12} md={8}>
+        <h1>hello</h1>
+      </Grid>
+    </Grid>
+  );
 };
 
 export default Dashboard;

@@ -15,7 +15,7 @@ const adminDashboard = (user) => {
         id: 'default',
         title: 'דף הבית',
         type: 'item',
-        url: `/admins/${user.personalId}/default`,
+        url: `/admins/${user.uid}/default`,
         icon: icons.IconLayoutDashboard,
         breadcrumbs: false
       },
@@ -23,7 +23,7 @@ const adminDashboard = (user) => {
         id: 'messaging-system',
         title: 'מערכת פניות',
         type: 'item',
-        url: `/admins/${user.personalId}/messaging-system`,
+        url: `/admins/${user.uid}/messaging-system`,
         icon: icons.IconSend,
         breadcrumbs: false
       },
@@ -31,7 +31,7 @@ const adminDashboard = (user) => {
         id: 'details',
         title: 'פרטי המוסד',
         type: 'item',
-        url: `/admins/${user.personalId}/details`,
+        url: `/admins/${user.uid}/details`,
         icon: icons.IconFileDescription,
         breadcrumbs: false
       }

@@ -27,14 +27,14 @@ const adminClasses = (user) => {
                         id: 'management-sections',
                         title: 'ניהול מדורים',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/sections/management-sections`,
+                        url: `/admins/${user.uid}/classes/sections/management-sections`,
                         breadcrumbs: false
                     },
                     {
                         id: 'adding-section',
                         title: 'הוספת מדור',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/sections/adding-section`,
+                        url: `/admins/${user.uid}/classes/sections/adding-section`,
                         breadcrumbs: false
                     }
                 ]
@@ -50,14 +50,14 @@ const adminClasses = (user) => {
                         id: 'management-faculties',
                         title: 'ניהול פקולטות',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/faculties/management-faculties`,
+                        url: `/admins/${user.uid}/classes/faculties/management-faculties`,
                         breadcrumbs: false
                     },
                     {
                         id: 'adding-faculty',
                         title: 'הוספת פקולטה',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/faculties/adding-faculty`,
+                        url: `/admins/${user.uid}/classes/faculties/adding-faculty`,
                         breadcrumbs: false
                     }
                 ]
@@ -73,14 +73,14 @@ const adminClasses = (user) => {
                         id: 'management-departments',
                         title: 'ניהול חוגים',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/departments/management-departments`,
+                        url: `/admins/${user.uid}/classes/departments/management-departments`,
                         breadcrumbs: false
                     },
                     {
                         id: 'adding-department',
                         title: 'הוספת חוג',
                         type: 'item',
-                        url: `/admins/${user.personalId}/classes/departments/adding-department`,
+                        url: `/admins/${user.uid}/classes/departments/adding-department`,
                         breadcrumbs: false
                     }
                 ]
