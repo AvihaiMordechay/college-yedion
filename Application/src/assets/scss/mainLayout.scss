@@ -5,3 +5,8 @@
 .icon-slidebar {
     margin-left: -25px;
 }
+
+.MuiDataGrid-columnSeparator {
+  cursor: ew-resize; /* או נסה 'col-resize' */
+  transform: scaleX(-1); /* היפוך כיוון הגרירה */
+}
